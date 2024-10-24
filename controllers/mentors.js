@@ -18,8 +18,19 @@ const createMentor = async (req, res) => {
   }
 };
 
-const getMentor = (req, res) => {
-  res.json({ id: req.params.id });
+const getMentor = async (req, res) => {
+  try {
+    const { id: mentorID } = req.params;
+    const mentor = await Mentor.findOne({ _id: mentorID });
+
+    if (!mentor) {
+      return res.status(404).json({ msg: `no mentor with id: ${mentorID}` });
+    }
+
+    res.status(200).json({ mentor });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
 };
 
 const updateMentor = (req, res) => {
