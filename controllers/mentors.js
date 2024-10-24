@@ -1,7 +1,12 @@
 const Mentor = require('../models/Mentor');
 
-const getAllMentors = (req, res) => {
-  res.send('get all mentor profiles');
+const getAllMentors = async (req, res) => {
+  try {
+    const mentors = await Mentor.find({});
+    res.status(200).json({ mentors });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
 };
 
 const createMentor = async (req, res) => {
