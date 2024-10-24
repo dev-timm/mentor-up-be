@@ -37,8 +37,19 @@ const updateMentor = (req, res) => {
   res.send('update mentor profile');
 };
 
-const deleteMentor = (req, res) => {
-  res.send('delete mentor profile');
+const deleteMentor = async (req, res) => {
+  try {
+    const { id: mentorID } = req.params;
+    const mentor = await Mentor.findOneAndDelete({ _id: mentorID });
+
+    if (!mentor) {
+      return res.status(404).json({ msg: `no mentor with id: ${mentorID}` });
+    }
+
+    res.status(200).json({ mentor });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
 };
 
 module.exports = {
