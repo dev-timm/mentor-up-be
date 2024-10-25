@@ -19,7 +19,7 @@ app.use('/api/v1/mentors', mentors);
 app.use(notFound);
 app.use(errorHandlerMiddleware);
 
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 const start = async () => {
   try {
