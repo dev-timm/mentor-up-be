@@ -4,6 +4,7 @@ const mentors = require('./routes/mentors');
 const connectDB = require('./db/connect');
 require('dotenv').config();
 const notFound = require('./middleware/not-found');
+const errorHandlerMiddleware = require('./middleware/error-handler');
 
 // middleware
 app.use(express.json());
@@ -16,6 +17,7 @@ app.get('/mentor', (req, res) => {
 app.use('/api/v1/mentors', mentors);
 
 app.use(notFound);
+app.use(errorHandlerMiddleware);
 
 const port = 3001;
 

@@ -1,70 +1,50 @@
 const Mentor = require('../models/Mentor');
+const asyncWrapper = require('../middleware/async');
+const { createCustomError } = require('../errors/custom-error');
 
-const getAllMentors = async (req, res) => {
-  try {
-    const mentors = await Mentor.find({});
-    res.status(200).json({ mentors });
-  } catch (error) {
-    res.status(500).json({ msg: error });
+const getAllMentors = asyncWrapper(async (req, res) => {
+  const mentors = await Mentor.find({});
+  res.status(200).json({ mentors });
+});
+
+const createMentor = asyncWrapper(async (req, res) => {
+  const mentor = await Mentor.create(req.body);
+  res.status(201).json({ mentor });
+});
+
+const getMentor = asyncWrapper(async (req, res, next) => {
+  const { id: mentorID } = req.params;
+  const mentor = await Mentor.findOne({ _id: mentorID });
+  if (!mentor) {
+    return next(createCustomError(`No mentor with id: ${mentorID}`, 404));
   }
-};
 
-const createMentor = async (req, res) => {
-  try {
-    const mentor = await Mentor.create(req.body);
-    res.status(201).json({ mentor });
-  } catch (error) {
-    res.status(500).json({ msg: error });
+  res.status(200).json({ mentor });
+});
+
+const deleteMentor = asyncWrapper(async (req, res) => {
+  const { id: mentorID } = req.params;
+  const mentor = await Mentor.findOneAndDelete({ _id: mentorID });
+  if (!mentor) {
+    return next(createCustomError(`No mentor with id: ${mentorID}`, 404));
   }
-};
 
-const getMentor = async (req, res) => {
-  try {
-    const { id: mentorID } = req.params;
-    const mentor = await Mentor.findOne({ _id: mentorID });
+  res.status(200).json({ mentor });
+});
 
-    if (!mentor) {
-      return res.status(404).json({ msg: `no mentor with id: ${mentorID}` });
-    }
+const updateMentor = asyncWrapper(async (req, res) => {
+  const { id: mentorID } = req.params;
+  const mentor = await Mentor.findByIdAndUpdate({ _id: mentorID }, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
-    res.status(200).json({ mentor });
-  } catch (error) {
-    res.status(500).json({ msg: error });
+  if (!mentor) {
+    return next(createCustomError(`No mentor with id: ${mentorID}`, 404));
   }
-};
 
-const deleteMentor = async (req, res) => {
-  try {
-    const { id: mentorID } = req.params;
-    const mentor = await Mentor.findOneAndDelete({ _id: mentorID });
-
-    if (!mentor) {
-      return res.status(404).json({ msg: `no mentor with id: ${mentorID}` });
-    }
-
-    res.status(200).json({ mentor });
-  } catch (error) {
-    res.status(500).json({ msg: error });
-  }
-};
-
-const updateMentor = async (req, res) => {
-  try {
-    const { id: mentorID } = req.params;
-    const mentor = await Mentor.findByIdAndUpdate({ _id: mentorID }, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!mentor) {
-      return res.status(404).json({ msg: `no mentor with id: ${mentorID}` });
-    }
-
-    res.status(200).json({ mentor });
-  } catch (error) {
-    res.status(500).json({ msg: error });
-  }
-};
+  res.status(200).json({ mentor });
+});
 
 module.exports = {
   getAllMentors,
