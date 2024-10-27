@@ -3,7 +3,7 @@ const asyncWrapper = require('../middleware/async');
 const { createCustomError } = require('../errors/custom-error');
 
 const getAllMentors = asyncWrapper(async (req, res) => {
-  const { category, name } = req.query;
+  const { category, name, sort } = req.query;
   const queryObject = {};
 
   if (category) {
@@ -16,7 +16,16 @@ const getAllMentors = asyncWrapper(async (req, res) => {
 
   console.log(queryObject);
 
-  const mentors = await Mentor.find(queryObject);
+  let result = Mentor.find(queryObject);
+
+  if (sort) {
+    const sortList = sort.split(',').join(' ');
+    result = result.sort(sortList);
+  } else {
+    result = result.sort('name');
+  }
+
+  const mentors = await result;
 
   res.status(200).json({ mentors, nbHits: mentors.length });
 });
