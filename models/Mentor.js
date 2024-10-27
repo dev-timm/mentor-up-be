@@ -46,6 +46,21 @@ const MentorSchema = new mongoose.Schema({
     minlegth: [100, 'this field can not be less than 4 characters long'],
     maxlength: [300, 'this field can not be more than 30 characters long'],
   },
+  category: {
+    type: String,
+    enum: {
+      values: [
+        'Development',
+        'Business',
+        'Finance',
+        'Design',
+        'Marketing',
+        'Product',
+        'Sales',
+      ],
+      message: '{VALUE} is not available',
+    },
+  },
   published: {
     type: Boolean,
     default: false,
