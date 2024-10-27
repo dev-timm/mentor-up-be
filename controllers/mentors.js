@@ -3,8 +3,18 @@ const asyncWrapper = require('../middleware/async');
 const { createCustomError } = require('../errors/custom-error');
 
 const getAllMentors = asyncWrapper(async (req, res) => {
-  const mentors = await Mentor.find({});
-  res.status(200).json({ mentors });
+  const { category } = req.query;
+  const queryObject = {};
+
+  if (category) {
+    queryObject.category = category;
+  }
+
+  console.log(queryObject);
+
+  const mentors = await Mentor.find(queryObject);
+
+  res.status(200).json({ mentors, nbHits: mentors.length });
 });
 
 const createMentor = asyncWrapper(async (req, res) => {
