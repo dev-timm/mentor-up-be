@@ -3,11 +3,15 @@ const asyncWrapper = require('../middleware/async');
 const { createCustomError } = require('../errors/custom-error');
 
 const getAllMentors = asyncWrapper(async (req, res) => {
-  const { category } = req.query;
+  const { category, name } = req.query;
   const queryObject = {};
 
   if (category) {
     queryObject.category = category;
+  }
+
+  if (name) {
+    queryObject.name = { $regex: name, $options: 'i' }; // uses $regex query operator https://www.mongodb.com/docs/manual/reference/operator/query/
   }
 
   console.log(queryObject);
