@@ -46,6 +46,10 @@ const MentorSchema = new mongoose.Schema({
     minlegth: [100, 'this field can not be less than 4 characters long'],
     maxlength: [300, 'this field can not be more than 30 characters long'],
   },
+  rating: {
+    type: Number,
+    default: 0,
+  },
   category: {
     type: String,
     enum: {
