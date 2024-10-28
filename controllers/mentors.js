@@ -3,7 +3,7 @@ const asyncWrapper = require('../middleware/async');
 const { createCustomError } = require('../errors/custom-error');
 
 const getAllMentors = asyncWrapper(async (req, res) => {
-  const { category, name, sort, fields } = req.query;
+  const { category, name, sort, fields, numericFilters } = req.query;
   const queryObject = {};
 
   if (category) {
@@ -14,8 +14,32 @@ const getAllMentors = asyncWrapper(async (req, res) => {
     queryObject.name = { $regex: name, $options: 'i' }; // uses $regex query operator https://www.mongodb.com/docs/manual/reference/operator/query/
   }
 
-  console.log(queryObject);
+  // filter by numeric result e.g. rating
+  if (numericFilters) {
+    const operatorMap = {
+      '>': '$gt',
+      '>=': '$gte',
+      '=': '$eq',
+      '<': '$lt',
+      '<=': '$lte',
+    };
+    // convert from user friendlich expression to mongoose
+    const regEx = /\b(<|>|>=|=|<|<=)\b/g;
+    let filters = numericFilters.replace(
+      regEx,
+      (match) => `-${operatorMap[match]}-`
+    );
+    // console.log(filters);
+    const options = ['rating'];
+    filters = filters.split(',').forEach((item) => {
+      const [field, operator, value] = item.split('-');
+      if (options.includes(field)) {
+        queryObject[field] = { [operator]: Number(value) };
+      }
+    });
+  }
 
+  console.log(queryObject);
   let result = Mentor.find(queryObject);
 
   // sort mentor list
@@ -26,7 +50,7 @@ const getAllMentors = asyncWrapper(async (req, res) => {
     result = result.sort('name');
   }
 
-  // show only specific mentor info
+  // filter by specific mentor info
   if (fields) {
     const fieldsList = fields.split(',').join(' ');
     result = result.select(fieldsList);
