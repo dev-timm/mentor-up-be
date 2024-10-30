@@ -1,6 +1,7 @@
 const Mentor = require('../models/Mentor');
 const asyncWrapper = require('../middleware/async');
-const { createCustomError } = require('../errors/custom-error');
+const { StatusCodes } = require('http-status-codes');
+const { NotFoundError } = require('../errors');
 
 const getAllMentors = asyncWrapper(async (req, res) => {
   const { category, name, sort, fields, numericFilters } = req.query;
@@ -64,32 +65,32 @@ const getAllMentors = asyncWrapper(async (req, res) => {
   result = result.skip(skip).limit(limit);
 
   const mentors = await result;
-  res.status(200).json({ mentors, nbHits: mentors.length });
+  res.status(StatusCodes.OK).json({ mentors, nbHits: mentors.length });
 });
 
 const createMentor = asyncWrapper(async (req, res) => {
   const mentor = await Mentor.create(req.body);
-  res.status(201).json({ mentor });
+  res.status(StatusCodes.CREATED).json({ mentor });
 });
 
 const getMentor = asyncWrapper(async (req, res, next) => {
   const { id: mentorID } = req.params;
   const mentor = await Mentor.findOne({ _id: mentorID });
   if (!mentor) {
-    return next(createCustomError(`No mentor with id: ${mentorID}`, 404));
+    throw new NotFoundError(`No mentor with id: ${mentorID}`);
   }
 
-  res.status(200).json({ mentor });
+  res.status(StatusCodes.OK).json({ mentor });
 });
 
 const deleteMentor = asyncWrapper(async (req, res) => {
   const { id: mentorID } = req.params;
   const mentor = await Mentor.findOneAndDelete({ _id: mentorID });
   if (!mentor) {
-    return next(createCustomError(`No mentor with id: ${mentorID}`, 404));
+    throw new NotFoundError(`No mentor with id: ${mentorID}`);
   }
 
-  res.status(200).json({ mentor });
+  res.status(StatusCodes.OK).json({ mentor });
 });
 
 const updateMentor = asyncWrapper(async (req, res) => {
@@ -100,10 +101,10 @@ const updateMentor = asyncWrapper(async (req, res) => {
   });
 
   if (!mentor) {
-    return next(createCustomError(`No mentor with id: ${mentorID}`, 404));
+    throw new NotFoundError(`No mentor with id: ${mentorID}`);
   }
 
-  res.status(200).json({ mentor });
+  res.status(StatusCodes.OK).json({ mentor });
 });
 
 module.exports = {
