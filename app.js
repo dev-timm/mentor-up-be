@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
+
 const mentors = require('./routes/mentors');
+const auth = require('./routes/auth');
+
 const connectDB = require('./db/connect');
 require('dotenv').config();
 const notFound = require('./middleware/not-found');
@@ -10,11 +13,8 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 app.use(express.json());
 
 // routes
-app.get('/mentor', (req, res) => {
-  res.send('MentorUp');
-});
-
 app.use('/api/v1/mentors', mentors);
+app.use('/api/v1/auth', auth);
 
 app.use(notFound);
 app.use(errorHandlerMiddleware);
