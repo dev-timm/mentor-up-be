@@ -77,7 +77,7 @@ const getMentor = asyncWrapper(async (req, res, next) => {
   const { id: mentorID } = req.params;
   const mentor = await Mentor.findOne({ _id: mentorID });
   if (!mentor) {
-    throw new NotFoundError(`No mentor with id: ${mentorID}`);
+    return next(new NotFoundError(`No mentor with id: ${mentorID}`));
   }
 
   res.status(StatusCodes.OK).json({ mentor });
@@ -87,7 +87,7 @@ const deleteMentor = asyncWrapper(async (req, res) => {
   const { id: mentorID } = req.params;
   const mentor = await Mentor.findOneAndDelete({ _id: mentorID });
   if (!mentor) {
-    throw new NotFoundError(`No mentor with id: ${mentorID}`);
+    return next(new NotFoundError(`No mentor with id: ${mentorID}`));
   }
 
   res.status(StatusCodes.OK).json({ mentor });
@@ -101,7 +101,7 @@ const updateMentor = asyncWrapper(async (req, res) => {
   });
 
   if (!mentor) {
-    throw new NotFoundError(`No mentor with id: ${mentorID}`);
+    return next(new NotFoundError(`No mentor with id: ${mentorID}`));
   }
 
   res.status(StatusCodes.OK).json({ mentor });
