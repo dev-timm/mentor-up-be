@@ -68,10 +68,10 @@ const getAllMentors = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ mentors, nbHits: mentors.length });
 });
 
-const createMentor = async (req, res) => {
+const createMentor = asyncWrapper(async (req, res) => {
   const mentor = await Mentor.create(req.body);
   res.status(StatusCodes.CREATED).json({ mentor });
-};
+});
 
 const getMentor = asyncWrapper(async (req, res, next) => {
   const { id: mentorID } = req.params;
