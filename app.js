@@ -8,8 +8,8 @@ const rateLimiter = require('express-rate-limit');
 const express = require('express');
 const app = express();
 
-const mentors = require('./routes/mentors');
-const auth = require('./routes/auth');
+const mentors = require('./routes/mentorsRoutes');
+const auth = require('./routes/authRoutes');
 
 const connectDB = require('./db/connect');
 const authenticateUser = require('./middleware/authentication');

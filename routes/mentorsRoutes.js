@@ -7,7 +7,7 @@ const {
   getMentor,
   updateMentor,
   deleteMentor,
-} = require('../controllers/mentors');
+} = require('../controllers/mentorsController');
 
 router.route('/').get(getAllMentors).post(createMentor);
 router.route('/:id').get(getMentor).patch(updateMentor).delete(deleteMentor);
