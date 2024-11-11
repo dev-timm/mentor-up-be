@@ -3,7 +3,15 @@ const asyncWrapper = require('../middleware/async');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 
-const register = asyncWrapper(async (req, res) => {
+const register = asyncWrapper(async (req, res, next) => {
+  const { email } = req.body;
+
+  // checks if email already exists
+  const emailAlreadyExists = await User.findOne({ email });
+  if (emailAlreadyExists) {
+    return next(new BadRequestError('Email already exists'));
+  }
+
   const user = await User.create({ ...req.body });
   const token = user.createJWT();
   res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
