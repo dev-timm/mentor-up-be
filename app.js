@@ -8,12 +8,14 @@ const rateLimiter = require('express-rate-limit');
 const express = require('express');
 const app = express();
 
+const morgan = require('morgan');
+
 const mentors = require('./routes/mentorRoutes');
 const auth = require('./routes/authRoutes');
 
 const connectDB = require('./db/connect');
 const authenticateUser = require('./middleware/authentication');
-const notFound = require('./middleware/not-found');
+const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
 // middleware
@@ -24,15 +26,22 @@ app.use(
     max: 100, // limit each IP to 100 requests per windowMs
   })
 );
-app.use(express.json());
+
+// security enhancements
 app.use(helmet());
 app.use(cors());
+
+// displays accessed routes and status codes in terminal
+app.use(morgan('tiny'));
+
+// gives access to json data in req.body
+app.use(express.json());
 
 // routes
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/mentors', authenticateUser, mentors);
 
-app.use(notFound);
+app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 3001;
