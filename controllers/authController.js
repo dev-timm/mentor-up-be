@@ -2,6 +2,7 @@ const User = require('../models/User');
 const asyncWrapper = require('../middleware/async');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
+const { createJWT } = require('../utils');
 
 const register = asyncWrapper(async (req, res, next) => {
   const { email, name, password } = req.body;
@@ -17,8 +18,10 @@ const register = asyncWrapper(async (req, res, next) => {
   const role = isFirstAccount ? 'admin' : 'user';
 
   const user = await User.create({ name, email, password, role });
-  const token = user.createJWT();
-  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
+  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  const token = createJWT({ payload: tokenUser });
+
+  res.status(StatusCodes.CREATED).json({ user: tokenUser, token });
 });
 
 const login = asyncWrapper(async (req, res, next) => {
