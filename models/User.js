@@ -23,6 +23,11 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'please provide password'],
     minlegth: [4, 'password can not be less than 4 characters long'],
   },
+  role: {
+    type: String,
+    enum: ['admin', 'user'],
+    default: 'user',
+  },
 });
 
 UserSchema.pre('save', async function () {
