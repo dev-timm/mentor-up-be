@@ -41,8 +41,10 @@ const login = asyncWrapper(async (req, res, next) => {
     return next(new UnauthenticatedError('Invalid Credentials'));
   }
 
-  const token = user.createJWT();
-  res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+
+  attachCookiesToResponse({ res, user: tokenUser });
+  res.status(StatusCodes.CREATED).json({ user: tokenUser });
 });
 
 module.exports = {
