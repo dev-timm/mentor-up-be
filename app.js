@@ -38,15 +38,15 @@ app.use(morgan('tiny'));
 // gives access to json data in req.body
 app.use(express.json());
 
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 app.get('/', (req, res) => {
   res.send('MentorUp API');
 });
 
 app.get('/api/v1', (req, res) => {
+  console.log(req.signedCookies);
   res.send('MentorUp API');
-  console.log(req.cookies);
 });
 
 // routes
