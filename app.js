@@ -9,6 +9,7 @@ const express = require('express');
 const app = express();
 
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 
 const mentors = require('./routes/mentorRoutes');
 const auth = require('./routes/authRoutes');
@@ -36,6 +37,17 @@ app.use(morgan('tiny'));
 
 // gives access to json data in req.body
 app.use(express.json());
+
+app.use(cookieParser());
+
+app.get('/', (req, res) => {
+  res.send('MentorUp API');
+});
+
+app.get('/api/v1', (req, res) => {
+  res.send('MentorUp API');
+  console.log(req.cookies);
+});
 
 // routes
 app.use('/api/v1/auth', auth);
