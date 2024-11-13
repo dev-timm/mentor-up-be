@@ -11,8 +11,9 @@ const app = express();
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
-const mentors = require('./routes/mentorRoutes');
-const auth = require('./routes/authRoutes');
+const mentorRouter = require('./routes/mentorRoutes');
+const authRouter = require('./routes/authRoutes');
+const userRouter = require('./routes/userRoutes');
 
 const connectDB = require('./db/connect');
 const authenticateUser = require('./middleware/authentication');
@@ -29,7 +30,9 @@ app.use(
 );
 
 // security enhancements
+// secures headers
 app.use(helmet());
+// allows other applications to access api
 app.use(cors());
 
 // displays accessed routes and status codes in terminal
@@ -50,8 +53,9 @@ app.get('/api/v1', (req, res) => {
 });
 
 // routes
-app.use('/api/v1/auth', auth);
-app.use('/api/v1/mentors', authenticateUser, mentors);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/mentors', authenticateUser, mentorRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
