@@ -12,7 +12,7 @@ const {
 router.get('/', getAllUsers);
 router.get('/showMe', ShowCurrentUser);
 router.patch('/updateUser', updateUser);
-router.get('/updatUserPassword', updateUserPassword);
+router.patch('/updateUserPassword', updateUserPassword);
 router.get('/:id', getSingleUser);
 
 module.exports = router;
