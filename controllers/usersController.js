@@ -20,10 +20,10 @@ const updateUserPassword = asyncWrapper(async (req, res) => {
   res.send('update user password');
 });
 
-module.exports({
+module.exports = {
   getAllUsers,
   getSingleUser,
   ShowCurrentUser,
   updateUser,
   updateUserPassword,
-});
+};
