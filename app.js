@@ -55,7 +55,7 @@ app.get('/api/v1', (req, res) => {
 // routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/mentors', authenticateUser, mentorRouter);
+app.use('/api/v1/mentors', mentorRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
