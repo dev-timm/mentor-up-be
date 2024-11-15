@@ -44,7 +44,7 @@ const login = asyncWrapper(async (req, res, next) => {
   const tokenUser = createTokenUser(user);
 
   attachCookiesToResponse({ res, user: tokenUser });
-  res.status(StatusCodes.CREATED).json({ user: tokenUser });
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 });
 
 const logout = asyncWrapper((req, res) => {

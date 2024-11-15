@@ -2,6 +2,7 @@ const User = require('../models/User');
 const asyncWrapper = require('../middleware/async');
 const { StatusCodes } = require('http-status-codes');
 const customError = require('../errors');
+const { createTokenUser, attachCookiesToResponse } = require('../utils');
 
 const getAllUsers = asyncWrapper(async (req, res) => {
   console.log(req.user);
@@ -24,7 +25,22 @@ const ShowCurrentUser = asyncWrapper(async (req, res) => {
 });
 
 const updateUser = asyncWrapper(async (req, res) => {
-  res.send('update user');
+  const { email, name } = req.body;
+
+  if (!email) {
+    return next(new customError.BadRequestError('Please provide all values'));
+  }
+
+  const user = await User.findOne({ _id: req.user.userId });
+
+  user.email = email;
+  user.name = name;
+
+  await user.save();
+
+  const tokenUser = createTokenUser(user);
+  attachCookiesToResponse({ res, user: tokenUser });
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 });
 
 const updateUserPassword = asyncWrapper(async (req, res) => {
