@@ -8,8 +8,19 @@ const {
   updateMentor,
   deleteMentor,
 } = require('../controllers/mentorsController');
+const {
+  authenticateUser,
+  authorizePermissions,
+} = require('../middleware/authentication');
 
-router.route('/').get(getAllMentors).post(createMentor);
-router.route('/:id').get(getMentor).patch(updateMentor).delete(deleteMentor);
+router
+  .route('/')
+  .get(getAllMentors)
+  .post([authenticateUser, authorizePermissions('admin')], createMentor);
+router
+  .route('/:id')
+  .get(getMentor)
+  .patch([authenticateUser, authorizePermissions('admin')], updateMentor)
+  .delete([authenticateUser, authorizePermissions('admin')], deleteMentor);
 
 module.exports = router;
