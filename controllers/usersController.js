@@ -20,7 +20,7 @@ const getSingleUser = asyncWrapper(async (req, res) => {
 });
 
 const ShowCurrentUser = asyncWrapper(async (req, res) => {
-  res.send('show current users');
+  res.status(StatusCodes.OK).json({ user: req.user });
 });
 
 const updateUser = asyncWrapper(async (req, res) => {
