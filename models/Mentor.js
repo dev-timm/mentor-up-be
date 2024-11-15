@@ -60,6 +60,11 @@ const MentorSchema = new mongoose.Schema(
         message: '{VALUE} is not available',
       },
     },
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     published: {
       type: Boolean,
       default: false,
