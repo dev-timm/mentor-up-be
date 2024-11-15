@@ -2,7 +2,11 @@ const User = require('../models/User');
 const asyncWrapper = require('../middleware/async');
 const { StatusCodes } = require('http-status-codes');
 const customError = require('../errors');
-const { createTokenUser, attachCookiesToResponse } = require('../utils');
+const {
+  createTokenUser,
+  attachCookiesToResponse,
+  checkPermissions,
+} = require('../utils');
 
 const getAllUsers = asyncWrapper(async (req, res) => {
   console.log(req.user);
@@ -17,6 +21,7 @@ const getSingleUser = asyncWrapper(async (req, res) => {
     return next(new NotFoundError(`No user with id: ${req.params.id}`));
   }
 
+  checkPermissions(req.user, user._id);
   res.status(StatusCodes.OK).json({ user });
 });
 
