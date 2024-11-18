@@ -7,6 +7,7 @@ const {
   getMentor,
   updateMentor,
   deleteMentor,
+  uploadImage,
 } = require('../controllers/mentorsController');
 const {
   authenticateUser,
@@ -17,6 +18,11 @@ router
   .route('/')
   .get(getAllMentors)
   .post([authenticateUser, authorizePermissions('admin')], createMentor);
+
+router
+  .route('/uploadImage')
+  .post([authenticateUser, authorizePermissions('admin')], uploadImage);
+
 router
   .route('/:id')
   .get(getMentor)

@@ -60,6 +60,10 @@ const MentorSchema = new mongoose.Schema(
         message: '{VALUE} is not available',
       },
     },
+    image: {
+      type: String,
+      default: '/uploads/example.jpeg',
+    },
     user: {
       type: mongoose.Types.ObjectId,
       ref: 'User',

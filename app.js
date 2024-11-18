@@ -10,13 +10,13 @@ const app = express();
 
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
 
 const mentorRouter = require('./routes/mentorRoutes');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 
 const connectDB = require('./db/connect');
-const authenticateUser = require('./middleware/authentication');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
@@ -42,6 +42,9 @@ app.use(morgan('tiny'));
 app.use(express.json());
 
 app.use(cookieParser(process.env.JWT_SECRET));
+
+app.use(express.static('./public'));
+app.use(fileUpload());
 
 app.get('/', (req, res) => {
   res.send('MentorUp API');

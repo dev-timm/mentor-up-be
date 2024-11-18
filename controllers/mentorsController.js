@@ -2,6 +2,7 @@ const Mentor = require('../models/Mentor');
 const asyncWrapper = require('../middleware/async');
 const { StatusCodes } = require('http-status-codes');
 const { NotFoundError } = require('../errors');
+const path = require('path');
 
 const getAllMentors = asyncWrapper(async (req, res) => {
   const { category, name, sort, fields, numericFilters } = req.query;
@@ -74,11 +75,6 @@ const createMentor = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.CREATED).json({ mentor });
 });
 
-// const createMentor = asyncWrapper(async (req, res) => {
-//   const mentor = await Mentor.create(req.body);
-//   res.status(StatusCodes.CREATED).json({ mentor });
-// });
-
 const getMentor = asyncWrapper(async (req, res, next) => {
   const { id: mentorID } = req.params;
   const mentor = await Mentor.findOne({ _id: mentorID });
@@ -116,10 +112,37 @@ const updateMentor = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ mentor });
 });
 
+const uploadImage = asyncWrapper(async (req, res) => {
+  if (!req.files) {
+    return next(new BadRequestError('No file uploaded'));
+  }
+
+  const mentorImage = req.files.image;
+
+  // checks if mimetype is an image
+  if (!productImage.mimetype.startsWith('image')) {
+    return next(new BadRequestError('Please upload image'));
+  }
+
+  const maxSize = 1024 * 1024;
+
+  if (mentorImage.size > maxSize) {
+    return next(new BadRequestError('Please upload image smaller than 1MB'));
+  }
+
+  const imagePath = path.join(
+    __dirname,
+    '../public/uploads/' + `${productImage.name}`
+  );
+  await productImage.mv(imagePath);
+  res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
+});
+
 module.exports = {
   getAllMentors,
   createMentor,
   getMentor,
   updateMentor,
   deleteMentor,
+  uploadImage,
 };
