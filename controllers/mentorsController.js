@@ -69,9 +69,15 @@ const getAllMentors = asyncWrapper(async (req, res) => {
 });
 
 const createMentor = asyncWrapper(async (req, res) => {
+  req.body.user = req.user.userId;
   const mentor = await Mentor.create(req.body);
   res.status(StatusCodes.CREATED).json({ mentor });
 });
+
+// const createMentor = asyncWrapper(async (req, res) => {
+//   const mentor = await Mentor.create(req.body);
+//   res.status(StatusCodes.CREATED).json({ mentor });
+// });
 
 const getMentor = asyncWrapper(async (req, res, next) => {
   const { id: mentorID } = req.params;
@@ -85,10 +91,13 @@ const getMentor = asyncWrapper(async (req, res, next) => {
 
 const deleteMentor = asyncWrapper(async (req, res) => {
   const { id: mentorID } = req.params;
-  const mentor = await Mentor.findOneAndDelete({ _id: mentorID });
+  const mentor = await Mentor.findOne({ _id: mentorID });
+
   if (!mentor) {
     return next(new NotFoundError(`No mentor with id: ${mentorID}`));
   }
+
+  await mentor.deleteOne();
 
   res.status(StatusCodes.OK).json({ mentor });
 });
