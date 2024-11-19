@@ -35,11 +35,20 @@ const createReview = asyncWrapper(async (req, res) => {
 });
 
 const getAllReviews = asyncWrapper(async (req, res) => {
-  res.send('get all reivews');
+  const reviews = await Review.find({});
+
+  res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 });
 
 const getSingleReview = asyncWrapper(async (req, res) => {
-  res.send('get single review');
+  const { id: reviewId } = req.params;
+  const review = await Review.findOne({ _id: reviewId });
+
+  if (!review) {
+    return next(new NotFoundError(`No review with id: ${reviewId}`));
+  }
+
+  res.status(StatusCodes.OK).json({ review });
 });
 
 const updateReview = asyncWrapper(async (req, res) => {
