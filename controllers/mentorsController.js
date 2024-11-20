@@ -77,7 +77,8 @@ const createMentor = asyncWrapper(async (req, res) => {
 
 const getMentor = asyncWrapper(async (req, res, next) => {
   const { id: mentorID } = req.params;
-  const mentor = await Mentor.findOne({ _id: mentorID });
+  const mentor = await Mentor.findOne({ _id: mentorID }).populate('reviews');
+
   if (!mentor) {
     return next(new NotFoundError(`No mentor with id: ${mentorID}`));
   }

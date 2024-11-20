@@ -35,15 +35,10 @@ const createReview = asyncWrapper(async (req, res) => {
 });
 
 const getAllReviews = asyncWrapper(async (req, res) => {
-  const reviews = await Review.find({})
-    .populate({
-      path: 'mentor',
-      select: 'name category',
-    })
-    .populate({
-      path: 'user',
-      select: 'name',
-    });
+  const reviews = await Review.find({}).populate({
+    path: 'mentor',
+    select: 'name category',
+  });
 
   res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 });
@@ -92,10 +87,18 @@ const deleteReview = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'Success! Review removed' });
 });
 
+const getSingleMentorReviews = asyncWrapper(async (req, res) => {
+  const { id: mentorId } = req.params;
+  const reviews = await Review.find({ mentor: mentorId });
+
+  res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
+});
+
 module.exports = {
   createReview,
   getAllReviews,
   getSingleReview,
   updateReview,
   deleteReview,
+  getSingleMentorReviews,
 };

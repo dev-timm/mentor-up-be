@@ -74,7 +74,14 @@ const MentorSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+MentorSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'mentor',
+  justOne: false,
+});
 
 module.exports = mongoose.model('Mentor', MentorSchema);

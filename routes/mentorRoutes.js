@@ -9,10 +9,13 @@ const {
   deleteMentor,
   uploadImage,
 } = require('../controllers/mentorsController');
+
 const {
   authenticateUser,
   authorizePermissions,
 } = require('../middleware/authentication');
+
+const { getSingleMentorReviews } = require('../controllers/reviewController');
 
 router
   .route('/')
@@ -28,5 +31,7 @@ router
   .get(getMentor)
   .patch([authenticateUser, authorizePermissions('admin')], updateMentor)
   .delete([authenticateUser, authorizePermissions('admin')], deleteMentor);
+
+router.route('/:id/reviews').get(getSingleMentorReviews);
 
 module.exports = router;
