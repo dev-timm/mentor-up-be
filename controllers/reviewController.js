@@ -35,7 +35,15 @@ const createReview = asyncWrapper(async (req, res) => {
 });
 
 const getAllReviews = asyncWrapper(async (req, res) => {
-  const reviews = await Review.find({});
+  const reviews = await Review.find({})
+    .populate({
+      path: 'mentor',
+      select: 'name category',
+    })
+    .populate({
+      path: 'user',
+      select: 'name',
+    });
 
   res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 });
