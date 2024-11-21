@@ -84,4 +84,12 @@ MentorSchema.virtual('reviews', {
   justOne: false,
 });
 
+MentorSchema.pre(
+  'deleteOne',
+  { document: true, query: false },
+  async function () {
+    await this.model('Review').deleteMany({ mentor: this._id });
+  }
+);
+
 module.exports = mongoose.model('Mentor', MentorSchema);
