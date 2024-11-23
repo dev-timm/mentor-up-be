@@ -41,10 +41,11 @@ const MentorSchema = new mongoose.Schema(
       trim: true,
       maxlength: [300, 'this field can not be more than 300 characters long'],
     },
-    rating: {
+    averageRating: {
       type: Number,
       default: 0,
     },
+    numberOfReviews: { type: Number, default: 0 },
     category: {
       type: String,
       enum: {
