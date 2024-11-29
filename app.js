@@ -4,6 +4,7 @@ require('dotenv').config();
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimiter = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const express = require('express');
 const app = express();
@@ -36,6 +37,9 @@ app.use(helmet());
 // allows other applications to access api
 app.use(cors());
 
+// protect against mongoDB injection
+app.use(mongoSanitize());
+
 // displays accessed routes and status codes in terminal
 app.use(morgan('tiny'));
 
@@ -46,15 +50,6 @@ app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use(express.static('./public'));
 app.use(fileUpload());
-
-app.get('/', (req, res) => {
-  res.send('MentorUp API');
-});
-
-app.get('/api/v1', (req, res) => {
-  console.log(req.signedCookies);
-  res.send('MentorUp API');
-});
 
 // routes
 app.use('/api/v1/auth', authRouter);
