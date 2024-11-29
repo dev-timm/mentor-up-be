@@ -63,7 +63,7 @@ const MentorSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: '/uploads/example.jpeg',
+      default: '/uploads/placeholder.jpg',
     },
     user: {
       type: mongoose.Types.ObjectId,

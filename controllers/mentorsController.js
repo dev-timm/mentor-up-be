@@ -1,7 +1,7 @@
 const Mentor = require('../models/Mentor');
 const asyncWrapper = require('../middleware/async');
 const { StatusCodes } = require('http-status-codes');
-const { NotFoundError } = require('../errors');
+const { NotFoundError, BadRequestError } = require('../errors');
 const path = require('path');
 
 const getAllMentors = asyncWrapper(async (req, res) => {
@@ -113,7 +113,7 @@ const updateMentor = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ mentor });
 });
 
-const uploadImage = asyncWrapper(async (req, res) => {
+const uploadImage = asyncWrapper(async (req, res, next) => {
   if (!req.files) {
     return next(new BadRequestError('No file uploaded'));
   }
@@ -121,7 +121,7 @@ const uploadImage = asyncWrapper(async (req, res) => {
   const mentorImage = req.files.image;
 
   // checks if mimetype is an image
-  if (!productImage.mimetype.startsWith('image')) {
+  if (!mentorImage.mimetype.startsWith('image')) {
     return next(new BadRequestError('Please upload image'));
   }
 
@@ -133,10 +133,10 @@ const uploadImage = asyncWrapper(async (req, res) => {
 
   const imagePath = path.join(
     __dirname,
-    '../public/uploads/' + `${productImage.name}`
+    '../public/uploads/' + `${mentorImage.name}`
   );
-  await productImage.mv(imagePath);
-  res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
+  await mentorImage.mv(imagePath);
+  res.status(StatusCodes.OK).json({ image: `/uploads/${mentorImage.name}` });
 });
 
 module.exports = {
