@@ -6,7 +6,7 @@ const { checkPermissions } = require('../utils');
 
 const asyncWrapper = require('../middleware/async');
 
-const createReview = asyncWrapper(async (req, res) => {
+const createReview = asyncWrapper(async (req, res, next) => {
   const { mentor: mentorId } = req.body;
 
   const isValidMentor = await Mentor.findOne({ _id: mentorId });
@@ -43,7 +43,7 @@ const getAllReviews = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 });
 
-const getSingleReview = asyncWrapper(async (req, res) => {
+const getSingleReview = asyncWrapper(async (req, res, next) => {
   const { id: reviewId } = req.params;
   const review = await Review.findOne({ _id: reviewId });
 
@@ -54,7 +54,7 @@ const getSingleReview = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ review });
 });
 
-const updateReview = asyncWrapper(async (req, res) => {
+const updateReview = asyncWrapper(async (req, res, next) => {
   const { id: reviewId } = req.params;
   const { rating, title, comment } = req.body;
   const review = await Review.findOne({ _id: reviewId });
@@ -73,7 +73,7 @@ const updateReview = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ review });
 });
 
-const deleteReview = asyncWrapper(async (req, res) => {
+const deleteReview = asyncWrapper(async (req, res, next) => {
   const { id: reviewId } = req.params;
   const review = await Review.findOne({ _id: reviewId });
 
